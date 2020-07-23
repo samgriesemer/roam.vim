@@ -1,3 +1,7 @@
+**Note**: this fork previously contained code for the [Vim-roam](https://github.com/samgriesemer/vim-roam)
+project, but has since been moved to its own repo (as linked). _This repo_ will now be used as the primary
+`wiki.vim` development fork that Vim-roam depends on. 
+
 # Introduction
 
 This is a [Vim](http://www.vim.org/) plugin for writing and maintaining
