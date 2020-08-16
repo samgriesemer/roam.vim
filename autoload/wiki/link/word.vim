@@ -15,8 +15,8 @@ function! wiki#link#word#template(_url, text) abort dict " {{{1
   " asks for target link.
 
   " Allow map from text -> url (without extension)
-  if !empty(g:wiki_map_link_create) && exists('*' . g:wiki_map_link_create)
-    let l:url_target = call(g:wiki_map_link_create, [a:text])
+  if g:wiki_link_conceal && !empty(g:wiki_map_text_to_link) && exists('*' . g:wiki_map_text_to_link)
+    let l:url_target = call(g:wiki_map_text_to_link, [a:text])
   else
     let l:url_target = a:text
   endif

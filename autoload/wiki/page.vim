@@ -6,8 +6,8 @@
 
 function! wiki#page#open(page) abort "{{{1
   let l:page =
-        \ !empty(g:wiki_map_create_page) && exists('*' . g:wiki_map_create_page)
-        \ ? call(g:wiki_map_create_page, [a:page])
+        \ !empty(g:wiki_map_text_to_file) && exists('*' . g:wiki_map_text_to_file)
+        \ ? call(g:wiki_map_text_to_file, [a:page])
         \ : a:page
   call wiki#url#parse('wiki:/' . l:page).open()
 endfunction
@@ -398,20 +398,26 @@ endfunction
 
 function! s:rename_update_links(old, new) abort " {{{1
   " if prose_links enabled, match prose-like file names for the old and new names
-  if g:prose_links
-    let l:old = call(g:wiki_map_file_to_title, [a:old])
-    let l:new = call(g:wiki_map_file_to_title, [a:new])
-  else
-    let l:old = a:old
-    let l:new = a:new
+  let l:old = a:old
+  let l:new = a:new
+
+  if !empty(g:wiki_map_link_to_file) && exists('*' . g:wiki_map_link_to_file)
+    if !empty(g:wiki_map_file_to_link) && exists('*' . g:wiki_map_file_to_link)
+        let l:old = call(g:wiki_map_file_to_link, [a:old])
+        let l:new = call(g:wiki_map_file_to_link, [a:new])
+    else
+       call wiki#log#warn('A mapping from link to file is defined, but you have no
+                   \ supplied the inverse mapping. Consider defining wiki_map_file_to_link
+                   \ to ensure transformed links can be found.')
+    endif
   endif
 
   " Pattern to search for relevant links
-  let l:pattern  = '\v\[\[\zs' . l:old_re . '\ze%(#.*)?%(\|.*)?\]\]'
-  let l:pattern .= '|\[.*\]\(\zs' . l:old_re . '\ze%(#.*)?\)'
-  let l:pattern .= '|\[.*\]\[\zs' . l:old_re . '\ze%(#.*)?\]'
-  let l:pattern .= '|\[\zs' . l:old_re . '\ze%(#.*)?\]\[\]'
-  let l:pattern .= '\<\<\zs' . l:old_re . '\ze#,[^>]{-}\>\>'
+  let l:pattern  = '\v\[\[\zs' . l:old . '\ze%(#.*)?%(\|.*)?\]\]'
+  let l:pattern .= '|\[.*\]\(\zs' . l:old . '\ze%(#.*)?\)'
+  let l:pattern .= '|\[.*\]\[\zs' . l:old . '\ze%(#.*)?\]'
+  let l:pattern .= '|\[\zs' . l:old . '\ze%(#.*)?\]\[\]'
+  let l:pattern .= '\<\<\zs' . l:old . '\ze#,[^>]{-}\>\>'
 
   let l:num_files = 0
   let l:num_links = 0
