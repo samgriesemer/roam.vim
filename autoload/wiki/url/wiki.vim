@@ -19,6 +19,14 @@ function! wiki#url#wiki#parse(url) abort " {{{1
     let l:fname = l:anchors[0]
           \ . (l:anchors[0] =~# '/$' ? b:wiki.index_name : '')
   endif
+  
+  " Function for modifying the links themselves so we don't always have to be
+  " so explicit; is the exact same code as is used to modify page names when using
+  " WikiOpen
+  let l:fname =
+        \ !empty(g:wiki_map_visit_link) && exists('*' . g:wiki_map_visit_link)
+        \ ? call(g:wiki_map_visit_link, [l:fname])
+        \ : l:fname
 
   " Extract the full path
   let l:url.path = l:fname[0] ==# '/'
