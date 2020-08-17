@@ -397,7 +397,14 @@ endfunction
 " }}}1
 
 function! s:rename_update_links(old, new) abort " {{{1
-  let l:old_re = '(\.\/|\/)?' . escape(a:old, '.')
+  " if prose_links enabled, match prose-like file names for the old and new names
+  if g:prose_links
+    let l:old = call(g:wiki_map_file_to_title, [a:old])
+    let l:new = call(g:wiki_map_file_to_title, [a:new])
+  else
+    let l:old = a:old
+    let l:new = a:new
+  endif
 
   " Pattern to search for relevant links
   let l:pattern  = '\v\[\[\zs' . l:old_re . '\ze%(#.*)?%(\|.*)?\]\]'
@@ -416,7 +423,7 @@ function! s:rename_update_links(old, new) abort " {{{1
       if match(l:line, l:pattern) != -1
         let l:updates = 1
         let l:num_links += 1
-        call add(l:lines, substitute(l:line, l:pattern, a:new, 'g'))
+        call add(l:lines, substitute(l:line, l:pattern, l:new, 'g'))
       else
         call add(l:lines, l:line)
       endif
