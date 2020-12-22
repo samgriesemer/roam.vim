@@ -60,9 +60,10 @@ function! wiki#page#rename(newname, ...) abort "{{{1
   endif
 
   " Does not support renaming files inside journal
-  if b:wiki.in_journal
-    return wiki#log#error('Not supported yet.')
-  endif
+  "if b:wiki.in_journal
+    "echom 'Not supported yet.'
+    "return
+  "endif
 
   " The new name must be nontrivial
   if empty(substitute(a:newname, '\s*', '', ''))
