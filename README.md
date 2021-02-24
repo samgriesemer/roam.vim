@@ -15,3 +15,12 @@ The code here modifies internal functionality and exposes a slightly altered opt
 than the original wiki.vim repo. This is to enable certain features for vim-roam that are
 outside the scope of the original wiki.vim project. The core differences will be fully
 documented soon.
+
+## New link options
+
+- `wiki_map_text_to_file`
+- `wiki_map_link_to_file`
+- `wiki_map_text_to_link`
+- `wiki_map_file_to_link`
+- `wiki_link_conceal`
+
